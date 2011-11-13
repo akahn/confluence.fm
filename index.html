@@ -31,7 +31,7 @@
       });
 
       function loadVideos() {
-        FB.api('/me/home', {q: "video"}, function(response) {
+        FB.api('/me/home', {limit: 100}, function(response) {
           var ids = parseFeed(response);
           embedVideo(ids);
         });
@@ -41,9 +41,8 @@
         videoIds = [];
 
         $.each(feed.data, function(i, item) {
-          var link = item.link;
-          if (link && link.match('youtube.com')) {
-            videoIds.push($.deparam.querystring(link)['v']);
+          if (item.type == "video" && item.link.match('youtube.com')) {
+            videoIds.push($.deparam.querystring(item.link)['v']);
           }
         });
 
