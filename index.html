@@ -1,0 +1,88 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <title>Social Jams</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+    <script src="https://raw.github.com/cowboy/jquery-bbq/master/jquery.ba-bbq.min.js"></script>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '309724822372094',
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          oauth      : true, // enable OAuth 2.0
+        });
+      };
+
+      $(document).ready(function() {
+        $('a').click(function() {
+          if (FB.getAuthResponse) {
+            loadVideos();
+          }
+          else {
+            FB.login(function(response) {
+              if (response.authResponse) {
+                loadVideos();
+              }
+            }, {scope: 'read_stream'});
+          }
+        });
+      });
+
+      function loadVideos() {
+        FB.api('/me/home', {q: "video"}, function(response) {
+          var ids = parseFeed(response);
+          embedVideo(ids);
+        });
+      }
+
+      function parseFeed(feed) {
+        videoIds = [];
+
+        $.each(feed.data, function(i, item) {
+          var link = item.link;
+          if (link && link.match('youtube.com')) {
+            videoIds.push($.deparam.querystring(link)['v']);
+          }
+        });
+
+        return videoIds;
+      }
+
+      function embedVideo(ids) {
+        var firstId = ids.shift();
+        swfobject.embedSWF("http://www.youtube.com/v/" + firstId + "?enablejsapi=1&playerapiid=video&autoplay=1&playlist=" + ids.join(',') + '&playnext=1&version=3', "video", "825", "356", "8", null, null, null, null);
+      }
+
+      // Load the YouTube JS asynchronously
+      var tag = document.createElement('script');
+      tag.src = "http://www.youtube.com/player_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // Load the Facebook JS asynchronously
+      (function(d){
+         var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+         js = d.createElement('script'); js.id = id; js.async = true;
+         js.src = "//connect.facebook.net/en_US/all.js";
+         d.getElementsByTagName('head')[0].appendChild(js);
+       }(document));
+
+      $('a').click(function() {
+        FB.api('/me', function(response) {
+          alert('Your name is ' + response.name);
+        });
+      });
+    </script>
+  </head>
+<body>
+  <div id="fb-root"></div>
+  <h1>Social Jams</h1>
+  <h2>Make a playlist out of the music your friends are sharing</h2>
+  <a id="fetch-stream" href="javascript:">Load music</a>
+  <div id="video"
+    Flash and JavaScript required
+  </div>
+</body>
+</html>
