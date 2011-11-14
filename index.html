@@ -5,6 +5,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
     <script src="https://raw.github.com/cowboy/jquery-bbq/master/jquery.ba-bbq.min.js"></script>
+    <script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+    <script src="/jquery.mustache.js"></script>
+    <script id="song-row" type="text/mustache">
+      {{#data}}
+        <tr data-url={{source}}>
+          <td>{{from.name}}</td>
+          <td>{{name}}</td>
+          <td><a class=remove href=javascript:>X</a></td>
+        </tr>
+      {{/data}}
+    </script>
     <script>
       window.fbAsyncInit = function() {
         FB.init({
@@ -16,37 +27,69 @@
       };
 
       $(document).ready(function() {
-        $('a').click(function() {
+        $('#fetch-stream').click(function() {
           if (FB.getAuthResponse) {
-            loadVideos();
+            loadFeed();
           }
           else {
             FB.login(function(response) {
               if (response.authResponse) {
-                loadVideos();
+                loadFeed();
               }
             }, {scope: 'read_stream'});
           }
         });
+
+        $('.remove').live('click', function(e) {
+          $(this).closest('tr').remove();
+        });
+
+        $('#play').click(function() {
+          var ids = extractVideoIds();
+          embedVideo(ids);
+
+          $(this).hide();
+        });
       });
 
-      function loadVideos() {
-        FB.api('/me/home', {limit: 100}, function(response) {
-          var ids = parseFeed(response);
-          embedVideo(ids);
+      function extractVideoIds() {
+        var urls = [];
+
+        $('tbody tr').each(function(i, elem) {
+          urls.push($(elem).attr('data-url'));
+        });
+
+        return _.map(urls, function(url) {
+          return url.match(/v\/(.+)\?/);
         });
       }
 
-      function parseFeed(feed) {
-        videoIds = [];
-
-        $.each(feed.data, function(i, item) {
-          if (item.type == "video" && item.link.match('youtube.com')) {
-            videoIds.push($.deparam.querystring(item.link)['v']);
+      function loadFeed() {
+        FB.api('/me/home', {limit: 200}, function(response) {
+          if (response.data) {
+            renderList(response);
+          }
+          else {
+            alert(response.error.message);
           }
         });
+      }
 
-        return videoIds;
+      function selectVideoItems(response) {
+        var list = _.filter(response.data, function(i) {
+          return i.type == 'video'
+        })
+
+        return {data: list.reverse()};
+      }
+
+      function renderList(response) {
+        var template = $('#song-row').html(),
+            response = selectVideoItems(response);
+
+        $('#fetch-stream').hide();
+        $('#play').show();
+        $('table').show().find('tbody').append($.mustache(template, response))
       }
 
       function embedVideo(ids) {
@@ -80,8 +123,13 @@
   <h1>Social Jams</h1>
   <h2>Make a playlist out of the music your friends are sharing</h2>
   <a id="fetch-stream" href="javascript:">Load music</a>
-  <div id="video"
-    Flash and JavaScript required
+  <a id="play" href="javascript:" style="display:none">Play</a>
+  <div id="video">
   </div>
+  <table style="display:none">
+    <thead><tr><td>From</td><td>Video</td></tr></thead>
+    <tbody>
+    </tbody>
+  </table>
 </body>
 </html>
