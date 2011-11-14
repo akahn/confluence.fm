@@ -60,7 +60,7 @@
         });
 
         return _.map(urls, function(url) {
-          return url.match(/v\/(.+)\?/);
+          return url.match(/v\/(.+)\?/)[1];
         });
       }
 
@@ -76,8 +76,8 @@
       }
 
       function selectVideoItems(response) {
-        var list = _.filter(response.data, function(i) {
-          return i.type == 'video'
+        var list = _.filter(response.data, function(item) {
+          return item.type == 'video' && item.source.match('youtu\.?be')
         })
 
         return {data: list.reverse()};
