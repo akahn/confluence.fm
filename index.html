@@ -9,7 +9,8 @@
     <script src="/jquery.mustache.js"></script>
     <script id="song-row" type="text/mustache">
       {{#data}}
-        <tr data-url={{source}}>
+        <tr data-videoId={{videoId}}>
+          <td><img src='http://i.ytimg.com/vi/{{videoId}}/default.jpg'</td>
           <td>{{from.name}}</td>
           <td>{{name}}</td>
           <td><a class=remove href=javascript:>X</a></td>
@@ -56,12 +57,10 @@
         var urls = [];
 
         $('tbody tr').each(function(i, elem) {
-          urls.push($(elem).attr('data-url'));
+          urls.push($(elem).attr('data-videoId'));
         });
 
-        return _.map(urls, function(url) {
-          return url.match(/v\/(.+)\?/)[1];
-        });
+        return urls;
       }
 
       function loadFeed() {
@@ -76,9 +75,12 @@
       }
 
       function selectVideoItems(response) {
-        var list = _.filter(response.data, function(item) {
+        var list = _(response.data).filter(function(item) {
           return item.type == 'video' && item.source.match('youtu\.?be')
-        })
+        }).map(function(item) {
+          item.videoId = item.source.match(/v\/(.+)\?/)[1];
+          return item;
+        });
 
         return {data: list.reverse()};
       }
@@ -127,7 +129,7 @@
   <div id="video">
   </div>
   <table style="display:none">
-    <thead><tr><td>From</td><td>Video</td></tr></thead>
+    <thead><tr><td></td><td>From</td><td>Video</td></tr></thead>
     <tbody>
     </tbody>
   </table>
