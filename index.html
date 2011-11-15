@@ -11,9 +11,9 @@
       {{#data}}
         <tr data-videoId={{videoId}}>
           <td><img src='http://i.ytimg.com/vi/{{videoId}}/default.jpg'</td>
-          <td>{{from.name}}</td>
           <td>{{name}}</td>
-          <td><a class=remove href=javascript:>X</a></td>
+          <td>{{from.name}}</td>
+          <td><a style="display:none" href="javascript:">X</a></td>
         </tr>
       {{/data}}
     </script>
@@ -39,7 +39,11 @@
           }
         });
 
-        $('.remove').live('click', function(e) {
+        $(document).on('mouseenter mouseleave', 'tbody tr', {}, function(e) {
+          $('a', this).toggle();
+        });
+
+        $('tr a').live('click', function() {
           $(this).closest('tr').remove();
         });
 
@@ -127,7 +131,7 @@
   <div id="video">
   </div>
   <table style="display:none">
-    <thead><tr><td></td><td>From</td><td>Video</td></tr></thead>
+    <thead><tr><td>Video</td><td></td><td>From</td></tr></thead>
     <tbody>
     </tbody>
   </table>
