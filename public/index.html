@@ -58,7 +58,7 @@
       function extractVideoIds() {
         return $('tbody tr').map(function(i, elem) {
           return $(elem).attr('data-id');
-        });
+        }).get();
       }
 
       function loadFeed() {
