@@ -22,17 +22,20 @@
         FB.init({
           appId      : '309724822372094',
           status     : true, // check login status
+          authResponse: true,
+          oath: true,
+          cookie: true
         });
       };
 
       $(document).ready(function() {
         $('#fetch-stream').click(function() {
-          if (FB.getAuthResponse) {
+          if (FB.getSession()) {
             loadFeed();
           }
           else {
             FB.login(function(response) {
-              if (response.authResponse) {
+              if (response.status == "connected") {
                 loadFeed();
               }
             }, {scope: 'read_stream'});
