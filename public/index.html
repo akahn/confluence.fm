@@ -38,7 +38,7 @@
               if (response.status == "connected") {
                 loadFeed();
               }
-            }, {scope: 'read_stream'});
+            }, {perms: 'read_stream'});
           }
         });
 
