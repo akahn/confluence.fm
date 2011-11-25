@@ -25,8 +25,13 @@ body
 a
   @include link-colors($link-color, $link-hover-color, $link-focus-color, $link-active-color, $link-visited-color)
 
+#controls
+  font-size: 24px
+
 #main
-  padding: 50px
+  padding-top: 50px
+  width: 90%
+  margin: 0 auto
 
 hgroup
   width: 100%
@@ -44,3 +49,19 @@ h2
   font-size: 20px
   margin-left: 20px
   display: inline-block
+
+.video-name
+  padding-left: 20px
+  width: 500px
+  overflow: hidden
+  text-overflow: ellipsis
+
+#loading, #play
+  display: none
+
+table
+  margin-top: 20px
+  width: 100%
+
+tbody tr:hover
+  background-color: #eee
