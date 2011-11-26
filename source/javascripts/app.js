@@ -22,10 +22,6 @@ $(document).ready(function() {
     }
   });
 
-  $(document).on('mouseenter mouseleave', 'tbody tr', {}, function(e) {
-    $('a', this).toggle();
-  });
-
   $('tr a').live('click', function() {
     $(this).closest('tr').remove();
   });
@@ -35,8 +31,15 @@ $(document).ready(function() {
     embedVideo(ids);
 
     $(this).hide();
+    $('.kill-row').remove();
   });
 });
+
+$('tbody tr').live('mouseenter', function(e) {
+  $('.kill-row a', this).css('visibility', 'visible');
+}).live('mouseleave', function(e) {
+  $('.kill-row a', this).css('visibility', 'hidden');
+});;
 
 function extractVideoIds() {
   return $('tbody tr').map(function(i, elem) {
@@ -75,7 +78,7 @@ function renderList(response) {
 
   $('#loading').hide();
   $('#play').show();
-  $('table').show().find('tbody').append($.mustache(template, response))
+  $('table').show().find('tbody').append($.mustache(template, response));
 }
 
 function embedVideo(ids) {
