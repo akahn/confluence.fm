@@ -72,6 +72,10 @@ configure :development do
   APP_ID = "306885819329928"
 end
 
+configure :production do
+  APP_ID = "309724822372094"
+end
+
 # Build-specific configuration
 configure :build do
   APP_ID = "309724822372094"
