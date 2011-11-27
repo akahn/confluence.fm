@@ -1,3 +1,9 @@
+//= require 'jquery.mustache'
+//= require 'deck'
+//= require 'players'
+//= require 'track'
+//= require 'playlist'
+
 window.fbAsyncInit = function() {
   FB.init({
     appId      : Confluence.appId,
@@ -39,7 +45,7 @@ $('tbody tr').live('mouseenter', function(e) {
   $('.kill-row a', this).css('visibility', 'visible');
 }).live('mouseleave', function(e) {
   $('.kill-row a', this).css('visibility', 'hidden');
-});;
+});
 
 function extractVideoIds() {
   return $('tbody tr').map(function(i, elem) {
@@ -53,7 +59,7 @@ function loadFeed() {
 
   FB.api('/me/home', {limit: 200}, function(response) {
     if (response.data) {
-      renderList(response);
+      renderList(response.data);
     }
     else {
       alert(response.error.message);
@@ -61,24 +67,13 @@ function loadFeed() {
   });
 }
 
-function selectVideoItems(response) {
-  var list = _(response.data).filter(function(item) {
-    return item.type == 'video' && item.source.match('youtu\.?be')
-  }).map(function(item) {
-    item.videoId = item.source.match(/v\/(.+)\?/)[1];
-    return item;
-  });
-
-  return {data: list.reverse()};
-}
-
 function renderList(response) {
-  var template = $('#song-row').html(),
-      response = selectVideoItems(response);
+  var playlist = Confluence.Playlist.createFromFeedItems(response);
+  console.log(playlist);
 
   $('#loading').hide();
   $('#play').show();
-  $('table').show().find('tbody').append($.mustache(template, response));
+  $('table').show().find('tbody').append(playlist.render());
 }
 
 function embedVideo(ids) {
