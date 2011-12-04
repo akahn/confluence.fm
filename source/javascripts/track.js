@@ -3,6 +3,7 @@ Confluence.Track = function(params) {
   this.name = params.name;
   this.from = params.from;
   this.service = Confluence.Players[params.service];
+  this.image = this.service.image(this.id);
 };
 
 Confluence.Track.createFromFeedItem = function(item) {
@@ -21,9 +22,5 @@ Confluence.Track.createFromFeedItem = function(item) {
 _.extend(Confluence.Track.prototype, {
   play: function() {
     Confluence.Players[this.service].play(this.id);
-  },
-
-  image: function() {
-    this.service.image(this.id);
   }
 });
