@@ -95,9 +95,3 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
    js.src = "//connect.facebook.net/en_US/all.js";
    d.getElementsByTagName('head')[0].appendChild(js);
  }(document));
-
-$('a').click(function() {
-  FB.api('/me', function(response) {
-    alert('Your name is ' + response.name);
-  });
-});
