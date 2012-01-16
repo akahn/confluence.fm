@@ -6,26 +6,27 @@
 
 window.fbAsyncInit = function() {
   FB.init({
-    appId      : Confluence.appId,
-    status     : true, // check login status
-    authResponse: true,
-    oath: true,
-    cookie: true
+    appId: Confluence.appId
   });
 };
 
 $(document).ready(function() {
   $('#load').click(function() {
-    if (FB.getSession()) {
-      loadFeed();
-    }
-    else {
-      FB.login(function(response) {
-        if (response.status == "connected") {
-          loadFeed();
-        }
-      }, {perms: 'read_stream'});
-    }
+    FB.getLoginStatus(function(response) {
+      if (response.status == 'connected') {
+        // Logged in and app is authorized
+        loadFeed();
+      }
+      else {
+        // Logged out and/or app is authorized
+        FB.login(function(response) {
+          console.log('login', response);
+          if (response.status == "connected") {
+            loadFeed();
+          }
+        }, {perms: 'read_stream'});
+      }
+    });
   });
 
   $('tr a').live('click', function() {
