@@ -2,8 +2,7 @@ Confluence.Track = function(params) {
   this.id = params.id;
   this.name = params.name;
   this.from = params.from;
-  this.service = Confluence.Players[params.service];
-  this.image = this.service.image(this.id);
+  this.image = "http://i.ytimg.com/vi/" + this.id + "/default.jpg"
 };
 
 Confluence.Track.createFromFeedItem = function(item) {
