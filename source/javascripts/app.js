@@ -37,6 +37,8 @@ $(document).ready(function() {
     var ids = extractVideoIds();
     embedVideo(ids);
 
+    Confluence.player = new Confluence.Player(Confluence.playlist);
+    Confluence.player.play();
     $(this).hide();
     $('.kill-row').remove();
   });
@@ -69,12 +71,11 @@ function loadFeed() {
 }
 
 function renderList(response) {
-  var playlist = Confluence.Playlist.createFromFeedItems(response);
-  console.log(playlist);
+  Confluence.playlist = Confluence.Playlist.createFromFeedItems(response);
 
   $('#loading').hide();
   $('#play').show();
-  $('table').show().find('tbody').append(playlist.render());
+  $('table').show().find('tbody').append(Confluence.playlist.render());
 }
 
 function embedVideo(ids) {

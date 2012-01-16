@@ -15,7 +15,6 @@ Confluence.Track.createFromFeedItem = function(item) {
     id:      extractId(item.source),
     name:    item.name,
     from:    item.from.name,
-    service: 'youtube'
   });
 }
 

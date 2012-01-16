@@ -1,26 +1,28 @@
 Confluence.Playlist = function(tracks) {
-  var playlist = this;
   this.tracks  = [];
   this.current = 0;
-
-  _.each(tracks, function(track) {
-    return playlist.addTrack(track);
-  });
 };
 
 Confluence.Playlist.createFromFeedItems = function(items) {
-  var tracks = _(items).filter(function(item) {
+  var playlist = new Confluence.Playlist(),
+      tracks   = _(items).filter(function(item) {
     return item.type == 'video' && item.source.match('youtu\.?be');
   }).map(function(item) {
     return Confluence.Track.createFromFeedItem(item);
   });
 
-  return new Confluence.Playlist(tracks);
+  playlist.addTracks(tracks)
+
+  return playlist;
 };
 
 _.extend(Confluence.Playlist.prototype, {
-  addTrack: function(track) {
-    this.tracks.push(track);
+  // Add one or more tracks to the end of the playlist
+  addTracks: function(tracks) {
+    var playlist = this;
+    _.chain([tracks]).flatten().each(function(track) {
+      playlist.tracks.push(track);
+    });
   },
 
   next: function() {
