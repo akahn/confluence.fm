@@ -16,9 +16,3 @@ Confluence.Track.createFromFeedItem = function(item) {
     from:    item.from.name,
   });
 }
-
-_.extend(Confluence.Track.prototype, {
-  play: function() {
-    Confluence.Players[this.service].play(this.id);
-  }
-});

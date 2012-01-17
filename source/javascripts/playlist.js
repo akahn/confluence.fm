@@ -25,8 +25,11 @@ _.extend(Confluence.Playlist.prototype, {
     });
   },
 
-  next: function() {
-    this.tracks.shift().play();
+  nextId: function() {
+    var id = this.tracks[this.current].id;
+    this.current += 1;
+
+    return id;
   },
 
   template: function() {
