@@ -40,7 +40,12 @@ $(document).ready(function() {
     Confluence.player = new Confluence.Player(Confluence.playlist);
     Confluence.player.play();
     $(this).hide();
+    $('#next').show();
     $('.kill-row').remove();
+  });
+
+  $('#next').click(function() {
+    Confluence.player.next();
   });
 });
 

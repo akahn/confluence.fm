@@ -11,15 +11,19 @@ _.extend(Confluence.Player.prototype, {
     swfobject.embedSWF("http://www.youtube.com/v/" + this.playlist.nextId() + "?enablejsapi=1&playerapiid=video&autoplay=1&version=3", "video", "825", "356", "8", null, null, options);
   },
 
+  next: function() {
+    this.youtube.loadVideoById(this.playlist.nextId());
+  },
+
   // Called on YouTube video state change
-  loadNext: function(state) {
+  handleStateChange: function(state) {
     if (state === 0) { // Video ended; load the next one
-      this.youtube.loadVideoById(this.playlist.nextId());
+      this.next();
     }
   }
 });
 
 function onYouTubePlayerReady(playerId) {
   Confluence.player.youtube = document.getElementById(playerId);
-  Confluence.player.youtube.addEventListener('onStateChange', 'Confluence.player.loadNext');
+  Confluence.player.youtube.addEventListener('onStateChange', 'Confluence.player.handleStateChange');
 }
